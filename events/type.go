@@ -7,7 +7,7 @@ type Fetcher interface{
 
 
 type Processor interface{
-	Procces(e Event)
+	Procces(e Event) error
 }
 
 type Type int
