@@ -15,7 +15,7 @@ type sqlite struct {
 
 
 func New(path string) (*sqlite, error) {
-	db, err := sql.Open("sqllite3", path)
+	db, err := sql.Open("sqlite3", path)
 	if err != nil {
 		return nil, fmt.Errorf("can't open database: %w", err)
 	}

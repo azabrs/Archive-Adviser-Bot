@@ -13,7 +13,7 @@ import (
 
 var (
 	bathSize = 100
-	datapath = "data/sqlite"
+	datapath = "data/sqlite/storage.db"
 )
 
 func mustToken() string{
