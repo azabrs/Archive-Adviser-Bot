@@ -5,26 +5,29 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	_ "github.com/mattn/go-sqlite3"
 )
 
-type sqlite struct{
+type sqlite struct {
 	db *sql.DB
 }
 
-func New(path string) (*sqlite, error){
+
+
+func New(path string) (*sqlite, error) {
 	db, err := sql.Open("sqllite3", path)
 	if err != nil {
 		return nil, fmt.Errorf("can't open database: %w", err)
 	}
 
 	err = db.Ping()
-	if err != nil{
-		return nil, fmt.Errorf("can't connect to database: %w", err) 
+	if err != nil {
+		return nil, fmt.Errorf("can't connect to database: %w", err)
 	}
-	return &sqlite{ db: db}, nil
+	return &sqlite{db: db}, nil
 }
 
-func (sq *sqlite)Save(ctx context.Context, p *storage.Page) error{
+func (sq *sqlite) Save(ctx context.Context, p *storage.Page) error {
 	q := `INSERT INTO pages (url, user_name) VALUES (?, ?)`
 	if _, err := sq.db.ExecContext(ctx, q, p.URL, p.UserName); err != nil {
 		return fmt.Errorf("can't save page: %w", err)
@@ -60,20 +63,19 @@ func (s *sqlite) Remove(ctx context.Context, page *storage.Page) error {
 	return nil
 }
 
-
-func (s *sqlite) IsExists(ctx context.Context, page *storage.Page) (bool, error) {
+func (sq *sqlite) IsExist(ctx context.Context, p *storage.Page) (bool, error) {
 	q := `SELECT COUNT(*) FROM pages WHERE url = ? AND user_name = ?`
 
 	var count int
 
-	if err := s.db.QueryRowContext(ctx, q, page.URL, page.UserName).Scan(&count); err != nil {
+	if err := sq.db.QueryRowContext(ctx, q, p.URL, p.UserName).Scan(&count); err != nil {
 		return false, fmt.Errorf("can't check if page exists: %w", err)
 	}
 
 	return count > 0, nil
 }
 
-func (sq *sqlite) INIT(ctx context.Context) error{
+func (sq *sqlite) Init(ctx context.Context) error {
 	q := `CREATE TABLE IF NOT EXISTS pages (url TEXT, user_name TEXT)`
 	_, err := sq.db.ExecContext(ctx, q)
 	if err != nil {

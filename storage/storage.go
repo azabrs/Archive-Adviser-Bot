@@ -6,15 +6,16 @@ import (
 	"errors"
 	"io"
 	"fmt"
+	"context"
 )
 
 
 
 type Storage interface{
-	Save(p *Page) error
-	PickRandom(UserName string) (*Page, error)
-	IsExist(p *Page) (bool, error)
-	Remove(p *Page) error
+	Save(ctx context.Context, p *Page) error
+	PickRandom(ctx context.Context, UserName string) (*Page, error)
+	IsExist(ctx context.Context, p *Page) (bool, error)
+	Remove(ctx context.Context, p *Page) error
 }
 
 
