@@ -23,7 +23,7 @@ func New(basepath string) files{
 	}
 }
 
-func (f *files)Save(p storage.Page) (err error){
+func (f files)Save(p *storage.Page) (err error){
 	defer func() { err = e.WrapIfErr("cant save", err)}()
 
 	fpath := filepath.Join(f.BasePath, p.UserName)
@@ -47,7 +47,7 @@ func (f *files)Save(p storage.Page) (err error){
 	return nil
 }
 
-func (f *files)PickRandom(UserName string) (p *storage.Page, err error){
+func (f files)PickRandom(UserName string) (p *storage.Page, err error){
 	defer func() { err = e.WrapIfErr("cant pick random item", err)}()
 	fpath := filepath.Join(f.BasePath, UserName)
 	allfiles, err := os.ReadDir(fpath)

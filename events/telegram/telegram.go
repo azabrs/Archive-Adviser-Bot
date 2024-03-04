@@ -1,7 +1,7 @@
 package telegram
 
 import (
-	"Archive-Adviser-Bot/clients/telegram"
+	tg_client "Archive-Adviser-Bot/clients/telegram"
 	"Archive-Adviser-Bot/events"
 	"Archive-Adviser-Bot/lib/e"
 	"Archive-Adviser-Bot/storage"
@@ -14,7 +14,7 @@ type Meta struct{
 }
 
 type Processor struct{
-	tg *telegram.Client
+	tg *tg_client.Client
 	offset int
 	storage storage.Storage
 }
@@ -24,7 +24,7 @@ var (
 	ErrUnknownMetaType = errors.New("unknown meta type")	
 )
 
-func New(client telegram.Client, storage storage.Storage) *Processor{
+func New(client tg_client.Client, storage storage.Storage) *Processor{
 	return &Processor{
 		tg : &client,
 		offset: 0,
@@ -75,7 +75,7 @@ func (p *Processor) processMessage(event events.Event) error{
 
 
 
-func event(upd telegram.Update) events.Event{
+func event(upd tg_client.Update) events.Event{
 	updType := fetch_text(upd)
 	res := events.Event{
 		Text: updType,
@@ -90,14 +90,14 @@ func event(upd telegram.Update) events.Event{
 	return res
 }
 
-func fetch_type(upd telegram.Update) events.Type {
+func fetch_type(upd tg_client.Update) events.Type {
 	if upd.Message == nil{
 		return events.Unknown
 	}
 	return events.Message
 }
 
-func fetch_text(upd telegram.Update) string {
+func fetch_text(upd tg_client.Update) string {
 	if upd.Message == nil{
 		return ""
 	}

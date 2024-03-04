@@ -1,10 +1,15 @@
 package main
 
 import (
-	"Archive-Adviser-Bot/clients/telegram"
+	tg_client "Archive-Adviser-Bot/clients/telegram"
+	event_consumer "Archive-Adviser-Bot/consumer/event-consumer"
+	"Archive-Adviser-Bot/events/telegram"
+	"Archive-Adviser-Bot/storage/files"
 	"flag"
 	"log"
 )
+
+var bathSize = 100
 
 func mustToken() string{
 	token := flag.String("tg-bot-token", "", "token for acces to tg bot")
@@ -16,8 +21,11 @@ func mustToken() string{
 }
 
 func main(){
-	tgClient := telegram.New("api.telegram.org", mustToken())
-	//fetcher = fetcher.New(tgClient)
-	//processor = processor.New(tgClient)
-	//consumer(fetcher, processor)
+	tgClient := tg_client.New("api.telegram.org", mustToken())
+	eventsProcessor := telegram.New(tgClient, files.New("/storage"))
+	log.Printf("service started")
+	cons := event_consumer.New(eventsProcessor, eventsProcessor, bathSize)
+	if err := cons.Start(); err != nil{
+		log.Fatal("service is stopped")
+	}
 }
