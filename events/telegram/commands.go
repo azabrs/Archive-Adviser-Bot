@@ -19,7 +19,7 @@ func (p *Processor) doCmd(text string, chatID int, username string) error{
 	log.Printf("got new command %s from %s", text, username)
 
 	if isAddCmd(text) {
-		return p.savePage(chatID, text, username)
+		return p.savePage(chatID, username, text)
 	}
 
 	switch text {
@@ -42,6 +42,7 @@ func (p *Processor)savePage(chatID int, username string, text string) (err error
 		UserName: username,
 
 	}
+
 	isExist, err := p.storage.IsExist(page)
 	if err != nil{
 		return err

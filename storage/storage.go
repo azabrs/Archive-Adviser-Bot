@@ -5,6 +5,7 @@ import (
 	"crypto/sha1"
 	"errors"
 	"io"
+	"fmt"
 )
 
 
@@ -32,5 +33,5 @@ func (p Page) Hash() (string, error){
 	if _, err := io.WriteString(h, p.UserName); err != nil{
 		return "", e.Wrap("cant calculate hash", err)
 	}
-	return string(h.Sum(nil)), nil
+	return fmt.Sprintf("%x", h.Sum(nil)), nil
 }

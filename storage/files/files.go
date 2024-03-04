@@ -28,17 +28,19 @@ func (f files)Save(p *storage.Page) (err error){
 
 	fpath := filepath.Join(f.BasePath, p.UserName)
 
-	if err := os.Mkdir(fpath, 0774); err != nil{
+	if err := os.MkdirAll(fpath, 0774); err != nil{
 		return err
 	}
 	fname, err := p.Hash()
 	if err != nil{
 		return err
 	}
-	file, err := os.Create(fname)
+	fullname := filepath.Join(fpath, fname)
+	file, err := os.Create(fullname)
 	if err != nil{
 		return err
 	}
+	
 	defer func(){ _ = file.Close()}()
 	err = gob.NewEncoder(file).Encode(p)
 	if err != nil{
@@ -50,6 +52,12 @@ func (f files)Save(p *storage.Page) (err error){
 func (f files)PickRandom(UserName string) (p *storage.Page, err error){
 	defer func() { err = e.WrapIfErr("cant pick random item", err)}()
 	fpath := filepath.Join(f.BasePath, UserName)
+	_, err = os.Stat(fpath)
+	if errors.Is(err, os.ErrNotExist){
+		return nil, storage.ErrNoSavedPages
+		
+	}
+
 	allfiles, err := os.ReadDir(fpath)
 	if err != nil{
 		return nil, err

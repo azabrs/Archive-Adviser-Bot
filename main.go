@@ -22,7 +22,7 @@ func mustToken() string{
 
 func main(){
 	tgClient := tg_client.New("api.telegram.org", mustToken())
-	eventsProcessor := telegram.New(tgClient, files.New("/storage"))
+	eventsProcessor := telegram.New(tgClient, files.New("files_storage"))
 	log.Printf("service started")
 	cons := event_consumer.New(eventsProcessor, eventsProcessor, bathSize)
 	if err := cons.Start(); err != nil{
