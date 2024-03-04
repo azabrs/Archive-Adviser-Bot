@@ -3,6 +3,7 @@ package storage
 import (
 	"Archive-Adviser-Bot/lib/e"
 	"crypto/sha1"
+	"errors"
 	"io"
 )
 
@@ -12,11 +13,11 @@ type Storage interface{
 	Save(p *Page) error
 	PickRandom(UserName string) (*Page, error)
 	IsExist(p *Page) (bool, error)
-	Delete(p *Page) error
+	Remove(p *Page) error
 }
 
 
-
+var ErrNoSavedPages = errors.New("no saved page")
 
 type Page struct{
 	URL string

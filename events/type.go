@@ -6,7 +6,7 @@ type Fetcher interface{
 }
 
 
-type Proccesor interface{
+type Processor interface{
 	Procces(e Event)
 }
 
@@ -20,4 +20,5 @@ const(
 type Event struct{
 	Type Type
 	Text string
+	Meta interface{}
 }

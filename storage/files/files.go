@@ -55,7 +55,7 @@ func (f *files)PickRandom(UserName string) (p *storage.Page, err error){
 		return nil, err
 	}
 	if len(allfiles) == 0{
-		return nil, errors.New("no saved page")
+		return nil, storage.ErrNoSavedPages
 	}
 	rand.Seed(time.Now().UnixNano())
 	n := rand.Intn(len(allfiles))
@@ -88,12 +88,10 @@ func (f files)IsExist(p *storage.Page) (bool, error){
 	switch {
 	case errors.Is(err, os.ErrNotExist) :
 		return false, nil
-	case err == nil:
-		return true, nil
-	default:
+	case err != nil:
 		return false, e.Wrap("cant remove page", err)
 	}
-
+	return true, nil
 }
 
 func (file files)ReadAndDecode(filepath string) (*storage.Page, error){
