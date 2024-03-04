@@ -106,7 +106,7 @@ func fetch_text(upd telegram.Update) string {
 
 func meta(event events.Event) (Meta, error){
 	res, ok := event.Meta.(Meta)
-	if ok == false{
+	if !ok{
 		return Meta{}, e.Wrap("cant get Meta", ErrUnknownMetaType)
 	}
 	return res, nil
